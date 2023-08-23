@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="Peticiones.css">
+</head>
+<body>
+    <h1>Pulsa cualquier botón</h1>
+    <button id="btnXMLHttpRequest">XMLHttpRequest</button>
+    <button id="btnFetchPromises">FetchPromises</button>
+    <button id="btnFetchAsync">FetchAsync</button>
+    <button id="btnFetchJquery">FetchJquery</button>
+    <button id="btnFetchAxios">FetchAxios</button>
+    <div class="container">
+        <img id="imagen">
+    </div>
+    <script>
+        document.getElementById("btnXMLHttpRequest").addEventListener("click", function() {
+            const data = null;
+            const xhr = new XMLHttpRequest();
+            xhr.withCredentials = false;
+
+            xhr.addEventListener("readystatechange", function() {
+                if (this.readyState === this.DONE) {
+                    if (this.status === 200) {
+                        const responseData = JSON.parse(this.responseText); // Convertir la respuesta en JSON
+                        console.log(responseData);
+                        
+                        const imgElement = document.getElementById("imagen");
+                        imgElement.src = responseData.message; // Establecer la URL de la imagen como src
+                        imgElement.style.display = "block"; // Mostrar la imagen
+                    } else {
+                        console.error("Request failed with status:", this.status);
+                    }
+                }
+            });
+
+            xhr.open("GET", "https://dog.ceo/api/breeds/image/random");
+            xhr.setRequestHeader("Accept", "*/*");
+            xhr.send(data);
+        });
+
+
+
+        // Función que devuelve una Promise
+        function fetchRandomDogImage() {
+            return new Promise(function(resolve, reject) {
+                fetch("https://dog.ceo/api/breeds/image/random")
+                    .then(function(response) {
+                        if (!response.ok) {
+                            throw new Error("Network response was not ok");
+                        }
+                        return response.json();
+                    })
+                    .then(function(data) {
+                        resolve(data);
+                    })
+                    .catch(function(error) {
+                        reject(error);
+                    });
+            });
+        }
+
+        // Evento de Promise
+        document.getElementById("btnFetchPromises").addEventListener("click", function() {
+            fetchRandomDogImage()
+                .then(function(data) {
+                    console.log(data);
+                    const imgElement = document.getElementById("imagen");
+                    imgElement.src = data.message; // Establecer la URL de la imagen como src
+                    imgElement.style.display = "block"; // Mostrar la imagen
+                })
+                .catch(function(error) {
+                    console.error("Error:", error);
+                });
+        });
+
+
+        document.getElementById("btnFetchAsync").addEventListener("click", async function() {
+            try {
+                let response = await fetch("https://dog.ceo/api/breeds/image/random");
+                let data = await response.json();
+
+                if (response.ok) {
+                    document.getElementById("imagen").src = data.message; // Usar data.message en lugar de data.results.picture.medium
+                    console.log(data);
+                } else {
+                    console.error("Request failed with status:", response.status);
+                }
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+
+
+        document.getElementById("btnFetchJquery").addEventListener("click", function() {
+            const settings = {
+                "async": true,
+                "crossDomain": true,
+                "url": "https://dog.ceo/api/breeds/image/random",
+                "method": "GET",
+                "headers": {
+                    "Accept": "*/*"
+                }
+            };
+
+            $.ajax(settings).done(function(response) {
+                console.log(response);
+                const imgElement = document.getElementById("imagen");
+                imgElement.src = response.message; // Establecer la URL de la imagen como src
+                imgElement.style.display = "block"; // Mostrar la imagen
+            });
+        });
+
+
+        document.getElementById("btnFetchAxios").addEventListener("click", async function() {
+            let reqOptions = {
+                url: "https://dog.ceo/api/breeds/image/random"
+            };
+
+            try {
+                let response = await axios.request(reqOptions);
+                console.log(response.data);
+                
+                const imgElement = document.getElementById("imagen");
+                imgElement.src = response.data.message; // Establecer la URL de la imagen como src
+                imgElement.style.display = "block"; // Mostrar la imagen
+            } catch (error) {
+                console.error("Error:", error);
+            }
+        });
+    </script>
+</body>
+</html>
