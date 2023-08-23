@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div id="usuario">usuario</div>
+    <button id="btnPeticion">Aceptar</button>
+    <script>
+        document.getElementById("btnPeticion").addEventListener("click",async function(){
+
+            let headersList = {
+            "Accept": "*/*",
+            "User-Agent": "Thunder Client (https://www.thunderclient.com)"
+            }
+
+            let response = await fetch("https://dog.ceo/api/breeds/image/random", { 
+            method: "GET",
+            headers: headersList
+            });
+
+            let data = await response.json();
+            console.log(data);
+        })
+    </script>
+</body>
+</html>
