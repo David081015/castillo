@@ -10,12 +10,14 @@
     <div class="container">
         <label for="breedSelect">Selecciona una raza de perro:</label>
         <select id="breedSelect"></select> <!-- Combo box para seleccionar la raza de perro -->
+        <button id="showImageButton">Mostrar Imagen</button> <!-- Botón para mostrar la imagen -->
         <img id="dogImage" src="" alt="Imagen de perro"> <!-- Imagen del perro -->
     </div>
 
     <script>
         const breedSelect = document.getElementById('breedSelect');
         const dogImage = document.getElementById('dogImage');
+        const showImageButton = document.getElementById('showImageButton');
 
         // Hacer una solicitud a la API para obtener la lista de razas de perros
         fetch('https://dog.ceo/api/breeds/list/all')
@@ -23,7 +25,7 @@
             .then(data => {
                 const breeds = data.message;
 
-                // LLena el combo box con las razas de perros
+                // Llena el combo box con las razas de perros
                 for (const breed in breeds) {
                     const option = document.createElement('option');
                     option.value = breed;
@@ -35,8 +37,8 @@
                 console.error('Error al cargar las razas de perros:', error);
             });
 
-        // Detectar cambios en la selección del combo box
-        breedSelect.addEventListener('change', () => {
+        // Al hacer clic en el botón, mostrar la imagen de la raza seleccionada
+        showImageButton.addEventListener('click', () => {
             const selectedBreed = breedSelect.value;
 
             // Hacer una solicitud a la API para obtener la imagen de la raza seleccionada

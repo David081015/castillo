@@ -36,6 +36,22 @@ select {
     margin-bottom: 10px; /* Reduce el margen inferior para ajustar el espacio */
 }
 
+button {
+    background-color: #3498db;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    margin: 5px;
+    cursor: pointer;
+    border-radius: 5px;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
 img#dogImage {
     max-width: 100%;
     height: auto;
