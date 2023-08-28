@@ -8,5 +8,5 @@ Intalacion del modulo:
 Uso del modulo
 ```js
     const pknpm19 = requiere('pknpm19');
-    let equipo = pknpm.obtenerEquipo(n); /*Donde n es un numero del 0 al 2*/
+    let equipos = pknpm.obtenerEquipo(n); /*Donde n es un numero del 0 al 2*/
 ```
