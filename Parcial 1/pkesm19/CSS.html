@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Obtener Equipo</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        
+        .equipo {
+            margin-top: 20px;
+            font-size: 18px;
+        }
+        
+        #btnEquipo {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: green; /* Cambio de color */
+            color: white; /* Cambio de color de texto */
+            border: none;
+            border-radius: 5px;
+        }
+        
+        #btnEquipo:hover {
+            background-color: darkgreen; /* Cambio de color al pasar el mouse */
+        }
+    </style>
+</head>
+<body>
+    <button id="btnEquipo">Obtener equipo</button>
+    <div class="equipo"></div>
+    <script type="module">
+        // import * as moduloesm from "./moduloesm";
+        // console.log(moduloesm.obtenerEquipo(0));
+
+        document.getElementById("btnEquipo").addEventListener("click", () => {
+            import("./moduloesm.js")
+            .then(function(moduloesm) {
+                const equipo = moduloesm.obtenerEquipo(0);
+                document.querySelector(".equipo").textContent = equipo;
+            })
+            .catch(function(error) {
+                console.error("Error al cargar el módulo:", error);
+            });
+        });
+    </script>
+</body>
+</html>
