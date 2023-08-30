@@ -5,7 +5,7 @@ const { jsPDF } = require("jspdf"); // will automatically load the node version
 console.log(__dirname);
 console.log(__filename);
 
-//Archivo de texto
+//-----------------------------------Generacion de Archivo de texto-----------------------------------
 fsc.writeFile(path.join(__dirname,'archivo.txt'),"archivo creado api callback",(err)=>{
     if(err) {
         console.log(err)
@@ -14,12 +14,12 @@ fsc.writeFile(path.join(__dirname,'archivo.txt'),"archivo creado api callback",(
     }
 })
 
-//Instalacion del paquete JsPDF para agregarle a la apliacacion la habilidad de generar PDF
+//-----------------------------------Generacion de PDF-----------------------------------
 const doc = new jsPDF();
 doc.text("Hello world!", 10, 10);
 doc.save(path.join(__dirname,"a4.pdf")); // will save the file in the current working directory
 
-//Generacion de excel
+//-----------------------------------Generacion de excel-----------------------------------
 // Create a new instance of a Workbook class
 var wb = new xl.Workbook();
 
