@@ -6,7 +6,7 @@ console.log(__dirname);
 console.log(__filename);
 
 //-----------------------------------Generacion de Archivo de texto-----------------------------------
-fsc.writeFile(path.join(__dirname,'archivo.txt'),"archivo creado api callback",(err)=>{
+fsc.writeFile(path.join(__dirname,'TXT.txt'),"archivo creado api callback",(err)=>{
     if(err) {
         console.log(err)
     } else {
@@ -17,7 +17,7 @@ fsc.writeFile(path.join(__dirname,'archivo.txt'),"archivo creado api callback",(
 //-----------------------------------Generacion de PDF-----------------------------------
 const doc = new jsPDF();
 doc.text("Hello world!", 10, 10);
-doc.save(path.join(__dirname,"a4.pdf")); // will save the file in the current working directory
+doc.save(path.join(__dirname,"PDF.pdf")); // will save the file in the current working directory
 
 //-----------------------------------Generacion de excel-----------------------------------
 // Create a new instance of a Workbook class
