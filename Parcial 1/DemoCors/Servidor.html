@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <style>
+        /* Estilos para el botón */
+        #Peticion {
+            padding: 15px 30px; /* Ajusta el padding para cambiar el tamaño del botón */
+            font-size: 18px;   /* Tamaño de la fuente */
+            background-color: #007bff; /* Color de fondo del botón */
+            color: #fff;       /* Color del texto */
+            border: none;      /* Elimina el borde */
+            border-radius: 5px; /* Borde redondeado */
+            cursor: pointer;   /* Cambia el cursor al pasar sobre el botón */
+        }
+    </style>
+</head>
+<body>
+    <button id="Peticion">Peticion</button>
+    <script>
+        document.getElementById("Peticion").addEventListener("click", () => {
+            fetch("http://localhost:8080")
+                .then((respuesta) => respuesta.text())
+                .then(dato => console.log(dato));
+        });
+    </script>
+</body>
+</html>
