@@ -16,3 +16,6 @@ app.post("/alumnos",(req,res)=>{
 app.listen(8080,(req,res)=>{
     console.log("Servidor express escuchando");
 });
+app.use((req,res,next)=>{
+    res.status(404).send("Servidor no lo encontro");
+});
