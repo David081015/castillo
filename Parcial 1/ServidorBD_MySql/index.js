@@ -42,7 +42,7 @@ app.get('/alumnos/:id', async (req, resp) => {
         console.log(req.params.id);
         const conexion = await mysql.createConnection(dataDeBase);
         const [rows, fields] = await conexion.query('SELECT * FROM tec WHERE idtec=' + req.params.id);
-        if (rows.length === 0) {
+        if (rows.length == 0) {
             resp.status(404);
             resp.json({ mensaje: 'Usuario no existe' });
         } else {
@@ -67,27 +67,39 @@ app.post('/alumnos', async (req, resp) => {
     } catch (err) {
         resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
     }
-});
+});  
 
-//UPDATE
-app.put('/alumnos', async (req, resp) => {
+app.put('/alumnos', async (req, res) => {
     try {
-        const id = req.query.idtec;
-        const nom = req.query.nombre;
-        const ape = req.query.apellido;
+        const objeto = req.body;
         const conexion = await mysql.createConnection(dataDeBase);
-        const [result] = await conexion.query('UPDATE tec SET nombre=?, apellido=? WHERE idtec=?', [nom, ape, id]);
 
-        if (result.affectedRows === 0) {
-            resp.status(404).json({ mensaje: 'Usuario no encontrado' });
+        if (!objeto.idtec || Object.keys(objeto).length === 1) {
+            return res.status(400).json({ error: 'Solicitud incorrecta' });
+        }
+    
+        let sentenciaSql = `UPDATE tec SET `;
+        const campos = Object.keys(objeto).filter(key => key !== 'idtec');
+        
+        for (let i = 0; i < campos.length; i++) {
+            if (i == campos.length - 1) {
+                sentenciaSql += `${campos[i]} = '${objeto[campos[i]]}'`;
+            } else {
+                sentenciaSql += `${campos[i]} = '${objeto[campos[i]]}', `;
+            }
+        }
+        sentenciaSql += ` WHERE idtec = ${objeto.idtec};`;
+        const result = await conexion.query(sentenciaSql);
+
+        if (result.affectedRows == 0) {
+            res.status(404).json({ mensaje: 'Usuario no encontrado' });
         } else {
-            resp.json({ mensaje: 'Usuario modificado correctamente' });
+            res.json({ mensaje: 'Usuario modificado correctamente' });
         }
     } catch (err) {
-        resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
+        res.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
     }
 });
-
 
 //DELETE
 app.delete('/alumnos', async (req, resp) => {
@@ -97,7 +109,7 @@ app.delete('/alumnos', async (req, resp) => {
         const conexion = await mysql.createConnection(dataDeBase);
         const query = "DELETE FROM tec WHERE idtec = "+id;
         const [rows, fields] = await conexion.query(query);
-        if (rows.affectedRows === 0) {
+        if (rows.affectedRows == 0) {
             resp.json({ mensaje: 'Registro No Eliminado' });
         } else {
             resp.json({ mensaje: 'Registro Eliminado' });
