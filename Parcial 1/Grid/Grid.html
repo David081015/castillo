@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://unpkg.com/gridjs/dist/theme/mermaid.min.css">
+    <title>Grid</title>
+</head>
+<body>
+    <div id="table"></div>
+    <script src="https://unpkg.com/gridjs/dist/gridjs.umd.js"></script>
+    <script>
+            new gridjs.Grid({
+            columns: ['idtec', 'nombre', 'apellido'],
+            server: {
+                url: 'http://localhost:8084/alumnos',
+                then: data => data.map(alumno => [alumno.idtec, alumno.nombre, alumno.apellido]),
+            },
+        }).render(document.getElementById('table'));
+    </script>    
+</body>
+</html>
