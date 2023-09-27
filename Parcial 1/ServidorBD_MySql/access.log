@@ -93,3 +93,5 @@
 ::1 - - [27/Sep/2023:13:35:50 +0000] "POST /alumnos HTTP/1.1" 500 109 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
 ::1 - - [27/Sep/2023:13:37:34 +0000] "POST /alumnos HTTP/1.1" 500 109 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
 ::1 - - [27/Sep/2023:13:37:44 +0000] "POST /alumnos HTTP/1.1" 500 109 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
+::1 - - [27/Sep/2023:13:42:18 +0000] "POST /alumnos HTTP/1.1" 500 109 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
+::1 - - [27/Sep/2023:13:42:32 +0000] "POST /alumnos HTTP/1.1" 500 109 "http://localhost/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/116.0.0.0 Safari/537.36 OPR/102.0.0.0"
