@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="Formulario.css">
+    <title>Document</title>
+</head>
+<body>
+    <h1>Form URLSearch</h1>
+    <form action="http://localhost:8084/alumnos" method="post" enctype="application/x-www-form-urlencoded">
+        <label for="idtec">Id</label>
+        <input id="idtec" name="idtec" type="text">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" type="text">
+        <label for="apellido">Apellido</label>
+        <input id="apellido" name="apellido" type="text">
+        <input type="submit" value="Enviar">
+    </form>
+
+    <br><br><br>
+
+    <h1>Form Data</h1>
+    <form action="http://localhost:8084/alumnos" method="post" enctype="multipart/form-data">
+        <label for="idtec">Id</label>
+        <input id="idtec" name="idtec" type="text">
+        <label for="nombre">Nombre</label>
+        <input id="nombre" name="nombre" type="text">
+        <label for="apellido">Apellido</label>
+        <input id="apellido" name="apellido" type="text">
+        <input type="submit" value="Enviar">
+    </form>
+</body>
+</html>

@@ -7,6 +7,7 @@ const mysql = require('mysql2/promise');
 
 const app = express();
 
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
