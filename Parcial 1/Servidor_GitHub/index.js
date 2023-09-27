@@ -33,7 +33,15 @@ app.get('/github', async (req, res) => {
     res.json(userData);
   } catch (error) {
     console.error('Error al obtener información del usuario de GitHub:', error);
-    res.status(500).json({ error: 'Error al obtener información del usuario de GitHub.' });
+
+    // Devolver un error más específico en la respuesta
+    if (error.response) {
+      // Si la solicitud a la API de GitHub devolvió una respuesta con un estado de error, puedes usar esa información.
+      res.status(error.response.status).json({ error: 'Error al obtener información del usuario de GitHub.', message: error.message });
+    } else {
+      // Si ocurrió otro tipo de error, puedes manejarlo aquí.
+      res.status(500).json({ error: 'Error al obtener información del usuario de GitHub.', message: error.message });
+    }
   }
 });
 
