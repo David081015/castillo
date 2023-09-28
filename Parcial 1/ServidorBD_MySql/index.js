@@ -58,9 +58,9 @@ app.get('/alumnos/:id', async (req, resp) => {
 // Ruta para agregar un usuario con parámetros de consulta
 app.post('/alumnos', async (req, resp) => {
     try {
-        const id = req.query.idtec;
-        const nom = req.query.nombre;
-        const ape = req.query.apellido;
+        const id = req.body.idtec;
+        const nom = req.body.nombre;
+        const ape = req.body.apellido;
         const conexion = await mysql.createConnection(dataDeBase);
         const [result] = await conexion.query('INSERT INTO tec (idtec, nombre, apellido) VALUES (?, ?, ?)', [id, nom, ape]);
         
@@ -69,6 +69,41 @@ app.post('/alumnos', async (req, resp) => {
         resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
     }
 });  
+
+//URLSearch
+app.post('/alumnos/urlencoded', async (req, resp) => {
+    try {
+        const id = req.body.idtec;
+        const nom = req.body.nombre;
+        const ape = req.body.apellido;
+        const conexion = await mysql.createConnection(dataDeBase);
+        const [result] = await conexion.query('INSERT INTO tec (idtec, nombre, apellido) VALUES (?, ?, ?)', [id, nom, ape]);
+
+        resp.status(201).json({ mensaje: 'Usuario agregado correctamente' });
+    } catch (err) {
+        resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
+        console.error(err);
+    }
+});
+
+//Data
+const multer = require('multer');
+const upload = multer();
+app.post('/alumnos/multipart', upload.none(), async (req, resp) => {
+    try {
+        const id = req.body.idtec;
+        const nom = req.body.nombre;
+        const ape = req.body.apellido;
+        const conexion = await mysql.createConnection(dataDeBase);
+        const [result] = await conexion.query('INSERT INTO tec (idtec, nombre, apellido) VALUES (?, ?, ?)', [id, nom, ape]);
+
+        resp.status(201).json({ mensaje: 'Usuario agregado correctamente' });
+    } catch (err) {
+        resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
+        console.error(err);
+    }
+});
+
 
 app.put('/alumnos', async (req, res) => {
     try {
