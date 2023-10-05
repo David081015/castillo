@@ -13,8 +13,8 @@ app.get("/Error", (req, res, next) => {
 
 // Middleware
 app.use((err, req, res, next) => {
-  console.error(err.stack);
-  res.status(500).send("Hubo un error en el servidor: " + err.message);
+  //console.error(err.stack);
+  res.status(502).send("Hubo un error en el servidor: " + err.message);
 });
 
 const port = process.env.PORT || 8084;
