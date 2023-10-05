@@ -4,10 +4,10 @@ const app = express();
 app.use(express.json());
 
 const validaUsuario = ()=>{
-    return [check('nombre').isLength({min:3, max:14})
-        ,check('apellido').isLength({min:10, max:14})
-        ,check('edad').isNumeric().withMessage("La edad debe ser numerica")
-        ,check('correo').isEmail().withMessage("El correo no tiene formato valido")]
+    return checkSchema({
+        'edad':{isNumeric:{errorMessage:"La edad debe ser numerica"}},
+        'correo':{isEmail:{errorMessage:"El correo no tiene formato valido"}}
+    })
 } 
 
 app.post("/alumno",validaUsuario(),(req,res)=>{
