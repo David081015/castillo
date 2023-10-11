@@ -4,7 +4,7 @@ const validation = (schema) => {
         console.log(error);
         if (error) {
             let { details } = error;
-            res.status(422).json({ error: details });
+            res.status(400).json({ error: details });
         } else {
             next();
         }
