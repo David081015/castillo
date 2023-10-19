@@ -1,7 +1,6 @@
 {
-  "name": "servidorjwt",
+  "name": "yaml",
   "version": "1.0.0",
-  "type": "module",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -11,8 +10,8 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "dotenv": "^16.3.1",
-    "express": "^4.18.2",
-    "jsonwebtoken": "^9.0.2"
+    "fs": "^0.0.1-security",
+    "path": "^0.12.7",
+    "yaml": "^2.3.3"
   }
 }

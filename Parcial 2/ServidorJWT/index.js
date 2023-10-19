@@ -1,15 +1,11 @@
-import express from 'express'
-import dotenv from 'dotenv'
-import jwt from 'jsonwebtoken'
-import authRouter from './auth.js'
+const express = require('express');
+const jsonwebtoken = require('jsonwebtoken');
 
-dotenv.config()
+let app = express();
+app.use(express.json());
 
-const app = express()
-const PORT = process.env.PORT
-
-app.use(express.json())
-    .use('/auth',authRouter)
-    .listen(PORT,()=>{
-        "Servidor escuchando en puerto 8084"
-    })
+app.post('/login',function(req,res,next){
+    var token = jsonwebtoken.sign(req.body,'clavesecreta');
+    console.log(token);
+    res.json()
+})
