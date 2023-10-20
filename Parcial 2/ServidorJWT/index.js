@@ -5,7 +5,7 @@ let app = express();
 app.use(express.json());
 
 app.post('/login',function(req,res,next){
-    var token = jsonwebtoken.sign(req.body,'clavesecreta');
+    var token = jsonwebtoken.sign(req.body,'claveSecreta');
     console.log(token);
     res.json({token});
 });
