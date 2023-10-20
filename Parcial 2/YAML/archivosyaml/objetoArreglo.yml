@@ -1,0 +1,7 @@
+personas:
+  - nombre: Laura
+    apellido: Martínez
+    edad: 28
+  - nombre: Roberto
+    apellido: Fernández
+    edad: 42
