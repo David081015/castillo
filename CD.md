@@ -340,4 +340,133 @@ public void BottomUpJELUVertical(string[] arrTokens)
 }
 
 #endregion
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+#region Analizador Léxico
+private void btnAnalizador_Click(object sender, EventArgs e)
+{
+    TotalErrores = 0;
+    rtxToken.Text = "";
+    dgvErrores.Rows.Clear();
+    dgvTablaSimbolos.Rows.Clear();
+    //arreglo obtiene el largo de las lineas y su longitud
+    string[] ArregloFuente = new string[rtxFuente.Lines.Length];
+    //guarda cada caracter del texto 
+    for (int i = 0; i <= rtxFuente.Lines.Length - 1; i++) {
+        ArregloFuente[i] = Blanco(rtxFuente.Lines[i]);
+    }
+    // * Inicia recorrido de las líneas del código
+    for (int j = 0; j <= ArregloFuente.Length - 1; ++j) {
+        int intEstado = 0;
+        string Cadena = "";
+        // * Foreach que permite hacer un recorrido para analizar la cadena
+        foreach (char chrCaracter in ArregloFuente[j]) {
+            if (chrCaracter.ToString() != " ") {
+                // * DataSet --> Huecos en memoria que almacenan base de datos, similar a access
+                // * DataTable --> Es un elemento de DataSet.La info que llega aqui, se manda en automatico a DataSet
+                // * Un DataTable contiene un DataColumn y DataRows
+                // * DataColumn --> Columnas de DataTable
+                // * DataRows --> Filas de DataTable
+
+                // * El DataAdapter conduce datos de la base de datos al DataSet y viceversa. Además se puede abrir y cerrar
+                // * una conexión por sí solo
+                Cadena += chrCaracter.ToString();
+                foreach (DataColumn Columna in dtMatriz.Columns) {
+                    //*Compara el caracter de arreglo con el caracter de la columna de la matriz
+                    if (chrCaracter.ToString() == Columna.ColumnName) {
+                        if (dtMatriz.Rows[intEstado][Columna].ToString() != "FDC") {
+                            String encabezado = Columna.ColumnName;
+                            intEstado = int.Parse(dtMatriz.Rows[intEstado][encabezado].ToString());
+                            break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                if(intEstado == 0) {
+                    break;
+                }
+                //Se obtiene el estado final
+                intEstado = int.Parse(dtMatriz.Rows[intEstado][dtMatriz.Columns.Count - 2].ToString());
+                string strToken = dtMatriz.Rows[intEstado][dtMatriz.Columns.Count - 1].ToString();
+                if(strToken=="ERROR") {
+                    dgvErrores.Rows.Add(j + 1, strToken, "ERROR EN LA LÍNEA " + Lineas);
+                    rtxToken.Text += strToken + " ";
+                    TotalErrores++;
+                    lblNumErrores.Text = TotalErrores.ToString();
+                    lstErrores.Add(strToken);
+                }
+                else if(strToken=="PR02") {
+                    strTipo = "ENTERO";
+                    rtxToken.Text += strToken + " ";
+                }
+                else if(strToken=="PR08") {
+                    strTipo = "REAL";
+                    rtxToken.Text += strToken + " ";
+                }
+                else {
+                    rtxToken.Text += strToken + " ";
+                }                       
+                /*LLENADO TABLA DE SÍMBOLOS
+                AQUI ENTRARA EN CASO DE SER UN IDENTIFICADOR, SE ASEGURARA MEDIANTE EL USO DE LA CADENAAUX QUE CONTENDRA EL
+                TIPO DE DATO
+                ENTERO VAR1 O REAL VAR2
+                */
+                if (strToken == "IDEN" && CadenaAux == "ENTERO" || CadenaAux == "REAL" || CadenaAux == "CADENA") {
+
+                    switch (CadenaAux)
+                    {
+                        case "ENTERO":
+                            CadenaAux = "ENTR";
+                            dgvTablaSimbolos.Rows.Add(Cadena, strToken, CadenaAux);
+                            break;
+                        case "REAL":
+                            dgvTablaSimbolos.Rows.Add(Cadena, strToken, CadenaAux);
+                            break;
+                        case "CADENA":
+                            CadenaAux = "CADE";
+                            dgvTablaSimbolos.Rows.Add(Cadena, strToken, CadenaAux);
+                            break;
+                    }                               
+                }
+                /*SINO EN CASO DE QUE EL TOKEN SEA COEN...*/                      
+                else if (strToken == "COEN") {       
+                    //LA COLUMNA VALOR SE LLENA CON UNA CADENA
+                    dgvTablaSimbolos.Rows.Add(Cadena, strToken, "ENTR");
+                }
+                /*SINO EN CASO DE QUE EL TOKEN SEA CORE...*/
+                else if (strToken == "CORE") {         
+                    dgvTablaSimbolos.Rows.Add(Cadena, strToken, "REAL");
+                }
+                CadenaAux = Cadena;
+                Cadena = "";
+                intEstado = 0;
+            }
+        }
+        rtxToken.Text += "\n";
+    }
+    rtxToken.SelectionStart = rtxToken.Text.Length;
+    posicion = rtxToken.SelectionStart;
+    //Borra duplicados de dgvTablaSimbolos
+    RemoverDuplicados(dgvTablaSimbolos);
+    //Guarda la tabla de simbolos a una lista de objetos
+    GuardarSimbolos();        
+}
+#endregion
 ```
