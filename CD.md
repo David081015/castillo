@@ -1,274 +1,343 @@
 # Codificación
 **Botón**
 ```C
- #region Postfija/Prefija
- string Codificado;
+ #region Analizador Semantico
+public void IntercambiarIdentificadoresParaSemantica()
+{
+    rtxTokenSemantica.Text = "";
+    string[] ArregloLineasFuente = new string[rtxFuente.Lines.Length];
+    string[] ArregloLineasLexico = new string[rtxToken.Lines.Length];
 
- string SimplificarExpresion(string expresion)
- {
-     // Realiza otros reemplazos según tus necesidades
-     expresion = expresion.Replace("INICIO", "");
-     // Elimina "ENTERO" seguido de una variable
-     expresion = Regex.Replace(expresion, "ENTERO @\\w+", "");
-     expresion = Regex.Replace(expresion, "REAL @\\w+", "");
-     expresion = expresion.Replace("FIN", "");
+    for (int i = 0; i <= rtxFuente.Lines.Length - 1; i++)
+    {
+        ArregloLineasFuente[i] = rtxFuente.Lines[i].Trim(' '); //Guarda cada linea en una celda del arreglo - Tambien le quita los espacios al final de la cadena
+        int numeroTokens = ArregloLineasFuente[i].Split(' ').Length; //Obtiene el numero de tokens en la linea - i -     
+        string[] AuxiliarTokensFuente = new string[numeroTokens]; //Inicializa el arreglo auxiliar con el numero de tokens        
+        ArregloLineasFuente[i].Split(' ').CopyTo(AuxiliarTokensFuente, 0); //Almacenar la linea - i - en un arreglo auxiliar (cada token en una celda)
 
-     // Reemplaza los caracteres '@' por una cadena vacía
-     expresion = expresion.Replace("@", "");
+        ArregloLineasLexico[i] = rtxToken.Lines[i].Trim(' '); //Guarda cada linea en una celda del arreglo - Tambien le quita los espacios al final de la cadena
+        int numeroTokensLexico = ArregloLineasLexico[i].Split(' ').Length; //Obtiene el numero de tokens en la linea - i -     
+        string[] AuxiliarTokensLexico = new string[numeroTokensLexico]; //Inicializa el arreglo auxiliar con el numero de tokens        
+        ArregloLineasLexico[i].Split(' ').CopyTo(AuxiliarTokensLexico, 0); //Almacenar la linea - i - en un arreglo auxiliar (cada token en una celda)
 
-     // Realiza una serie de reemplazos para simplificar la expresión matemática
-     expresion = expresion.Replace("(", "");
-     expresion = expresion.Replace(")", "");
+        if (Array.Exists(AuxiliarTokensFuente, element => element.StartsWith("@")))
+        {
+            for (int j = 0; j <= AuxiliarTokensFuente.Length - 1; j++)
+            {
+                if (AuxiliarTokensLexico[j] == "IDEN" && AuxiliarTokensFuente[j].Contains('@'))
+                {
+                    AuxiliarTokensLexico[j] = AuxiliarTokensFuente[j];
+                }
+            }
+        }
+        string strLinea = string.Join(" ", AuxiliarTokensLexico);
+        rtxTokenSemantica.AppendText(strLinea+"\n");
+    }
 
-     return expresion;
- }
- public void CadenaInfija()
- {
-     string[] lineas = rtxFuente.Text.Split('\n');
-     // Procesa cada línea y simplifica las expresiones
-     string resultado = "";
-     foreach (string linea in lineas)
-     {
-         if (!string.IsNullOrEmpty(linea))
-         {
-             resultado += SimplificarExpresion(linea);
-         }
-     }
-     txtExpresionInfija.Text = resultado;
-     txtTokensInfijos.Text = Decodificador(txtExpresionInfija.Text);
- }
+    string[] ArregloLineasSemantica = new string[rtxTokenSemantica.Lines.Length];
+    string strTextoRtxSemanticaNuevo = "";
 
- static string Prefijo(string Entrada)
- {
-     string s1 = null, s2 = null, s3 = null, aux1 = null;
-     int largo = 0, parcial = 1, ll = 0, jc = 0, ja = 0, lo, laux = 0, largo2 = 0, ce1 = 1, conta = 0;
-     char oo, carac2 = ' ';
+    for (int i = 0; i <= rtxTokenSemantica.Lines.Length - 1; i++)
+    {
+        ArregloLineasSemantica[i] = rtxTokenSemantica.Lines[i].Trim(' '); //Guarda cada linea en una celda del arreglo - Tambien le quita los espacios al final de la cadena
+        int numeroTokens = ArregloLineasSemantica[i].Split(' ').Length; //Obtiene el numero de tokens en la linea - i -     
+        string[] AuxiliarTokensSemantica = new string[numeroTokens]; //Inicializa el arreglo auxiliar con el numero de tokens    
+        ArregloLineasSemantica[i].Split(' ').CopyTo(AuxiliarTokensSemantica, 0); //Almacenar la linea - i - en un arreglo auxiliar (cada token en una celda)
 
-     largo = Entrada.Length;
-     while (parcial <= largo)
-     {
-         char carac;
-         carac = Convert.ToChar(Entrada.Substring(parcial - 1, 1));
+        for (int j = 0; j <= AuxiliarTokensSemantica.Length - 1; j++)
+        {
+            foreach (Simbolo simbolo in ListaSimbolos)
+            {
+                if (AuxiliarTokensSemantica[j] == simbolo.Lexema)
+                {
+                    AuxiliarTokensSemantica[j] = simbolo.Tipo;
+                }
+            }
 
-         switch (carac)
-         {
-             case var _ when char.IsLetter(carac):
-             case var _ when char.IsDigit(carac):
-                 s1 = s1 + carac;
-                 break;
-             case '+':
-             case '-':
-             case '*':
-             case '/':
-             case '=':
-                 if (ll == 0)
-                 {
-                     aux1 = carac + aux1;
-                     ll = 1;
-                 }
-                 else
-                 {
-                     lo = aux1.Length - 1;
-                     //Aqui se debe tomar el ultimo caracter y no el primero
-                     oo = Convert.ToChar(aux1.Substring(0, 1));
-                     jc = carac;
-                     ja = oo;
-                     if (jc > ja)
-                     {
-                         aux1 = "";
+        }
+        string strLinea = string.Join(" ", AuxiliarTokensSemantica);
+        strTextoRtxSemanticaNuevo += strLinea + "\n";
+    }
+    rtxTokenSemantica.Text = "";
+    rtxTokenSemantica.Text = strTextoRtxSemanticaNuevo;
+}
 
-                         aux1 = Convert.ToString(oo);
-                         s1 = s1.Substring(0, s1.Length - 1) + carac + s1.Substring(s1.Length - 1, 1);
-                     }
-                     else
-                     {
-                         if (jc == ja)
-                         {
-                             aux1 = "";
-                             aux1 = aux1 + carac + oo;
-                         }
-                         else
-                         {
-                             s1 = aux1 + s1;
-                             aux1 = Convert.ToString(carac);
-                         }
-                     }
-                 }
-                 break;
-             case '(':
-                 largo2 = parcial;
-                 while (ce1 != 0)
-                 {
-                     carac2 = Convert.ToChar(Entrada.Substring(largo2, 1));
-                     s2 = s2 + carac2;
-                     conta++;
-                     largo2++;
-                     switch (carac2)
-                     {
-                         case '(':
-                             ce1++;
-                             break;
-                         case ')':
-                             ce1--;
-                             break;
-                     }
-                 }
-                 s2 = s2.Substring(0, conta - 1);
-                 s3 = Prefijo(s2);
-                 s1 = s1 + s3;
-                 s2 = null;
-                 conta = 0;
-                 ce1 = 1;
-                 parcial = largo2;
-                 break;
-         }
-         parcial++;
-     }
-     s1 = aux1 + s1;
-     return s1;
- }
- static string Postfijo(string Entrada)
- {
-     string s1 = null, s2 = null, s3 = null, aux1 = null;
-     int largo = 0, parcial = 1, ll = 0, jc = 0, ja = 0, lo, laux = 0, largo2 = 0, ce1 = 1, conta = 0;
-     char oo, carac2 = ' ';
+public string AjustarTokensParaSemantica (string strCadena)
+{
+    var reemplazos = new Dictionary<string, string>();
+    reemplazos.Add("CORE", "REAL");
+    reemplazos.Add("COEN", "ENTR");
+    reemplazos.Add("LETR", "CADE");
 
-     largo = Entrada.Length;
-     while (parcial <= largo)
-     {
-         char carac;
-         carac = Convert.ToChar(Entrada.Substring(parcial - 1, 1));
+   foreach (var reemplazo in reemplazos) {
+      strCadena = strCadena.Replace(reemplazo.Key, reemplazo.Value);
+   }
+   
+   return strCadena;
+}
 
-         switch (carac)
-         {
-             case var _ when char.IsLetter(carac):
-             case var _ when char.IsDigit(carac):
-                 s1 = s1 + carac;
-                 break;
-             case '+':
-             case '-':
-             case '*':
-             case '/':
-             case '=':
-                 if (ll == 0)
-                 {
-                     aux1 = aux1 + carac;
-                     ll = 1;
-                 }
-                 else
-                 {
-                     lo = aux1.Length - 1;
-                     //Aqui se debe tomar el ultimo caracter y no el primero
-                     oo = Convert.ToChar(aux1.Substring(0, 1));
-                     jc = carac;
-                     ja = oo;
-                     if (jc > ja)
-                     {
-                         aux1 = "";
-                         aux1 = aux1 + carac + oo;
-                     }
-                     else
-                     {
-                         if (jc == ja)
-                         {
-                             s1 = s1 + aux1.Substring(0, 1);
-                             laux = aux1.Length;
-                             aux1 = aux1.Substring(1, laux - 1);
-                             aux1 = carac + aux1;
-                         }
-                         else
-                         {
-                             s1 = s1 + aux1;
-                             aux1 = Convert.ToString(carac);
-                         }
-                     }
-                 }
-                 break;
-             case '(':
-                 largo2 = parcial;
-                 while (ce1 != 0)
-                 {
-                     carac2 = Convert.ToChar(Entrada.Substring(largo2, 1));
-                     s2 = s2 + carac2;
-                     conta++;
-                     largo2++;
-                     switch (carac2)
-                     {
-                         case '(':
-                             ce1++;
-                             break;
-                         case ')':
-                             ce1--;
-                             break;
-                     }
-                 }
-                 s2 = s2.Substring(0, conta - 1);
-                 s3 = Postfijo(s2);
-                 s1 = s1 + s3;
-                 s2 = null;
-                 conta = 0;
-                 ce1 = 1;
-                 parcial = largo2;
-                 break;
-         }
-         parcial++;
-     }
-     s1 = s1 + aux1;
-     return s1;
- }
+private void btnSemantica_Click(object sender, EventArgs e)
+{
+    ListaErroresSemantica.Clear();
+    dgvErroresSemantica.Rows.Clear();
+    rtxDerivacionesJELU.Text = "";
+    rtxDerivacionesSemantica.Text = "";
+    rtxJELUVertical.Text = "";
+    lstSalidaJELU.Clear();
+    IntercambiarIdentificadoresParaSemantica(); //Cambiar los identificadores por su tipo
+    rtxTokenSemantica.Text = AjustarTokensParaSemantica(rtxTokenSemantica.Text.TrimEnd(char.Parse("\n"))); //Ajuste de tokens restantes: CORE, COEN, LETR
 
- private void btnPos_Click(object sender, EventArgs e)
- {
-     Codificado = Postfijo(txtExpresionInfija.Text);
-     StringBuilder output = new StringBuilder();
+    string[] ArregloLineasSemantica = new string[rtxTokenSemantica.Lines.Length];
+    bool enviarABottomUp = true;
 
-     foreach (char c in Codificado)
-     {
-         output.Append(c); // Agregar el carácter original
-         output.Append(' '); // Agregar un espacio después de cada carácter
-     }
+    for (int i = 0; i <= rtxTokenSemantica.Lines.Length - 1; i++)
+    {
+        intLineaErrorSemantica = i + 1;
+        ArregloLineasSemantica[i] = rtxTokenSemantica.Lines[i].Trim(' '); //Guarda cada linea en una celda del arreglo - Tambien le quita los espacios al final de la cadena
+        int numeroTokens = ArregloLineasSemantica[i].Split(' ').Length; //Obtiene el numero de tokens en la linea - i -     
+        string[] AuxiliarTokensSemantica = new string[numeroTokens]; //Inicializa el arreglo auxiliar con el numero de tokens    
+        ArregloLineasSemantica[i].Split(' ').CopyTo(AuxiliarTokensSemantica, 0); //Almacenar la linea - i - en un arreglo auxiliar (cada token en una celda)
 
-     string CodificadoConEspacio = output.ToString().Trim(); // Eliminar el espacio adicional al final
-     txtExpresionResultado.Text = CodificadoConEspacio;
-     txtTokensResultado.Text = Decodificador(CodificadoConEspacio);
- }
+        //Valida si hay un ERROR en la salida de sintaxis
+        enviarABottomUp = !rtxDerivaciones.Text.Contains("ERROR DE SINTAXIS");
 
- private void btnPre_Click(object sender, EventArgs e)
- {
-     Codificado = Prefijo(txtExpresionInfija.Text);
-     StringBuilder output = new StringBuilder();
+        if (enviarABottomUp)
+        { //Si no hay error envía los tokens de la linea actual a BottomUpSemantico
+            BottomUpSemantico(AuxiliarTokensSemantica);
+        }
+        else
+        { //Si encuentra un error (de sintaxis) avisa para corregir desde código fuente
+            rtxTokenSemantica.Text = "";
+            rtxDerivacionesSemantica.Text = "";
+            MessageBox.Show("Existe un error en sintáxis", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            break;
+        }
+    }
 
-     foreach (char c in Codificado)
-     {
-         output.Append(c); // Agregar el carácter original
-         output.Append(' '); // Agregar un espacio después de cada carácter
-     }
+    //Arreglo de lineas de sintaxis para metodo JELU
+    string[] ArregloTokensSintaxis = new string[rtxTokenSintaxis.Lines.Length];
 
-     string CodificadoConEspacio = output.ToString().Trim(); // Eliminar el espacio adicional al final
-     txtExpresionResultado.Text = CodificadoConEspacio;
-     txtTokensResultado.Text = Decodificador(CodificadoConEspacio);
- }
+    if (enviarABottomUp) {
+        //Para metodo JELU
+        for (int i = 0; i <= rtxTokenSintaxis.Lines.Length - 1; i++)
+        {
+            ArregloTokensSintaxis[i] = rtxTokenSintaxis.Lines[i].Trim(' '); //Guarda cada linea en una celda del arreglo - Tambien le quita los espacios al final de la cadena
+            int numeroTokens = ArregloTokensSintaxis[i].Split(' ').Length; //Obtiene el numero de tokens en la linea - i -     
+            string[] AuxiliarTokens = new string[numeroTokens]; //Inicializa el arreglo auxiliar con el numero de tokens        
+            ArregloTokensSintaxis[i].Split(' ').CopyTo(AuxiliarTokens, 0); //Almacenar la linea - i - en un arreglo auxiliar (cada token en una celda)    
+            BottomUpJELU(AuxiliarTokens);
+        }
+        PintarErroresSemantica("ERROR DE SEMANTICA", Color.Red, 0);
+        tabPestania.SelectedIndex = 1;
+        BottomUpJELUVertical(lstSalidaJELU.ToArray());
+        PintarErroresJELU("ERROR DE SEMANTICA", Color.Red, 0);
+    }
+    if(dgvErroresSemantica.ColumnCount == 1)
+    {
+        CadenaInfija();
+    }
+}
 
- public static string Decodificador(string C)
- {
-     // Reemplazar letras por "IDEN"
-     C = Regex.Replace(C, "[A-Za-z]", "IDEN");
+public void BottomUpSemantico(string[] arrTokens)
+{
+    int cantidadTokens = arrTokens.Length; //Obtiene el tamaño de la cadena de tokens
+    string cadenaTokens = string.Join(" ", arrTokens); //Convertir el arreglo de la cadena de tokens a un string
 
-     // Reemplazar los operadores y caracteres específicos
-     C = C.Replace("+", "OA01");
-     C = C.Replace("-", "OA02");
-     C = C.Replace("*", "OA03");
-     C = C.Replace("/", "OA04");
-     C = C.Replace("=", "OPAS");
+    rtxDerivacionesSemantica.Text += cadenaTokens + "\n"; //Agrega la cadena de tokens al textbox de derivaciones
 
-     // Reemplazar números enteros por "COEN"
-     C = Regex.Replace(C, @"\b\d+\b", "COEN");
+    if (dictReglasSemanticas.ContainsKey(cadenaTokens) && dictReglasSemanticas[cadenaTokens] == "S" || dictReglasSemanticas.ContainsKey(cadenaTokens) && dictReglasSemanticas[cadenaTokens] == "NOAP")
+    { //Si encuentra una S
+        rtxDerivacionesSemantica.Text += dictReglasSemanticas[cadenaTokens] + "\n";
+        rtxDerivacionesSemantica.Text += dictReglasSemanticas[cadenaTokens] == "S" ? "\n" : "";
+        rtxDerivacionesSemantica.Text += dictReglasSemanticas[cadenaTokens] == "NOAP" ? "\n" : "";
+    }
+    else //Caso: No encuentra una S directa, necesita derivarse o validar que realmente no existe
+    {
+        string cadenaTokensModificada = cadenaTokens, strBloque;
+        int aux = 0, restador = 1;
 
-     // Reemplazar números decimales por "CORE"
-     C = Regex.Replace(C, @"\b\d+\.\d+\b", "CORE");
+        do
+        {
+            int cantidadAuxiliar = cadenaTokensModificada.Split(' ').Length; //toma la cantidad de tokens en la cadena modificada
+            string[] ArrTokensModificados = new string[cantidadAuxiliar];
+            cadenaTokensModificada.Split(' ').CopyTo(ArrTokensModificados, 0); // Convierto en arreglo la cadena modificada
 
-     return C;
- }
+            strBloque = string.Join(" ", ArrTokensModificados.Skip(aux).Take(cantidadAuxiliar - restador));    //Se obtiene el bloque actual del recorrido   
 
- #endregion
+            if (dictReglasSemanticas.ContainsKey(strBloque)) //Pregunta si el diccionario contiene el bloque
+            {
+                cadenaTokensModificada = cadenaTokensModificada.Replace(strBloque, dictReglasSemanticas[strBloque]); //Si encuentra el bloque lo reemplaza con la gramatica
+                rtxDerivacionesSemantica.Text += cadenaTokensModificada + "\n"; //Visuales
+                rtxDerivacionesSemantica.Text += dictReglasSemanticas[strBloque] == "S" & cadenaTokensModificada.Split(' ').Length == 1 ? "\n" : "";//Visuales      
+                
+                if ((dictReglasSemanticas[strBloque] != "S" && dictReglasSemanticas[strBloque] != "NOAP") & cadenaTokensModificada.Split(' ').Length == 1)
+                {   
+                    rtxDerivacionesSemantica.Text += "ERROR DE SEMANTICA\n\n";
+                    AgregarErroresSemantica();
+                }
+                else
+                {
+                    rtxDerivacionesSemantica.Text += "";
+                }
+                aux = 0;
+                restador = 0;
+            }
+            else //Si no lo contiene lleva a cabo el sig. proceso para saber si ya recorrió toda la cadena antes de decrementar el numero de tkns
+            {
+                if ((aux + (cantidadAuxiliar - restador)) == cantidadAuxiliar)
+                {
+                    aux = 0;
+                    restador++;
+                }
+                else { aux++; }
+
+                if (strBloque == "" | (cadenaTokensModificada.Split(' ').Contains("S") & cadenaTokensModificada.Split(' ').Length > 1))
+                {
+                    rtxDerivacionesSemantica.Text += "ERROR DE SEMANTICA\n\n"; //Visuales
+                    AgregarErroresSemantica();
+                    break; //Controlar si encuentra un error de sintaxis romper para que no se cicle
+                }
+            }
+        } while (cadenaTokensModificada.Split(' ').Length > 1);
+    }
+}
+
+public void BottomUpJELU(string[] arrTokens)
+{
+    string cadenaTokens = string.Join(" ", arrTokens);
+    rtxDerivacionesJELU.Text += cadenaTokens + "\n"; //Agrega la cadena de tokens al richtextbox de derivaciones
+    
+    string valorEncontrado; //Para saber si el diccionario contiene el valor buscado, si no lo encuentra esta variable será null
+    if (dictGramaticasJELU.ContainsKey(cadenaTokens) && dictGramaticasJELU.TryGetValue(cadenaTokens, out valorEncontrado))
+    {
+        rtxDerivacionesJELU.Text += string.Concat(valorEncontrado, "\n\n");
+        lstSalidaJELU.Add(valorEncontrado);
+    }
+    else
+    { //BottomUp Core
+        string cadenaTokensModificada = cadenaTokens, strBloque;
+        int aux = 0, restador = 1;
+
+        do
+        {
+            int cantidadAuxiliar = cadenaTokensModificada.Split(' ').Length; //toma la cantidad de tokens en la cadena modificada
+            string[] ArrTokensModificados = new string[cantidadAuxiliar];
+            cadenaTokensModificada.Split(' ').CopyTo(ArrTokensModificados, 0); // Convierto en arreglo la cadena modificada
+
+            strBloque = string.Join(" ", ArrTokensModificados.Skip(aux).Take(cantidadAuxiliar - restador)); //Se obtiene el bloque actual del recorrido
+
+            if (dictGramaticasJELU.ContainsKey(strBloque))
+            {
+                cadenaTokensModificada = cadenaTokensModificada.Replace(strBloque, dictGramaticasJELU[strBloque]);
+                
+                rtxDerivacionesJELU.Text += string.Concat(cadenaTokensModificada, "\n"); //VISUALES
+                //rtxDerivacionesJELU.Text += cadenaTokensModificada.Split(' ').Length == 1 ? "\n" : ""; //VISUALES
+                if (cadenaTokensModificada.Split(' ').Length == 1)
+                {
+                    rtxDerivacionesJELU.Text += "\n";
+                    lstSalidaJELU.Add(cadenaTokensModificada);
+                }
+                //lstSalidaJELU.Add(valorEncontrado);
+
+                dictGramaticasJELU.TryGetValue(cadenaTokens, out valorEncontrado);
+
+                if (valorEncontrado != null && cadenaTokensModificada.Split(' ').Length != 1) {
+                    rtxDerivacionesJELU.Text += "";
+                }
+
+                aux = 0;
+                restador = 0;
+            }
+            else
+            {
+                if ((aux + (cantidadAuxiliar - restador)) == cantidadAuxiliar) {
+                    aux = 0;
+                    restador++;
+                }
+                else {
+                  aux++;
+                }
+
+                if ((strBloque == "" || ((cadenaTokensModificada.Split(' ').Contains("S") || cadenaTokensModificada.Split(' ').Contains("CON")))) && cadenaTokensModificada.Split(' ').Length > 1)
+                {
+                    rtxDerivacionesJELU.Text += "ERROR DE SEMANTICA\n\n"; //Visuales
+                    break; //Controlar si encuentra un error de sintaxis romper para que no se cicle
+                }
+            }
+
+        } while (cadenaTokensModificada.Split(' ').Length > 1);
+    }
+}
+
+public void BottomUpJELUVertical(string[] arrTokens)
+{
+    string cadenaTokens = string.Join(" ", arrTokens);
+    rtxJELUVertical.Text += cadenaTokens + "\n"; //Agrega la cadena de tokens al richtextbox de derivaciones
+
+    string valorEncontrado; //Para saber si el diccionario contiene el valor buscado, si no lo encuentra esta variable será null
+    if (dictGramaticasJELU.ContainsKey(cadenaTokens) && dictGramaticasJELU.TryGetValue(cadenaTokens, out valorEncontrado))
+    {
+        rtxJELUVertical.Text += string.Concat(valorEncontrado, "\n\n");
+    }
+    else
+    { //BottomUp Core
+        string cadenaTokensModificada = cadenaTokens, strBloque;
+        int aux = 0, restador = 1;
+
+        do
+        {
+            int cantidadAuxiliar = cadenaTokensModificada.Split(' ').Length; //toma la cantidad de tokens en la cadena modificada
+            string[] ArrTokensModificados = new string[cantidadAuxiliar];
+            cadenaTokensModificada.Split(' ').CopyTo(ArrTokensModificados, 0); // Convierto en arreglo la cadena modificada
+
+            strBloque = string.Join(" ", ArrTokensModificados.Skip(aux).Take(cantidadAuxiliar - restador)); //Se obtiene el bloque actual del recorrido
+
+            if (dictGramaticasJELU.ContainsKey(strBloque))
+            {
+                cadenaTokensModificada = cadenaTokensModificada.Replace(strBloque, dictGramaticasJELU[strBloque]);
+
+                rtxJELUVertical.Text += string.Concat(cadenaTokensModificada, "\n"); //VISUALES
+                if (cadenaTokensModificada.Split(' ').Length == 1 && cadenaTokensModificada.Split(' ').Contains("CON"))
+                {
+                    rtxJELUVertical.Text += "ERROR DE SEMANTICA\n\n";
+                    ListaErroresSemantica.Add("ERROR: FALTA ABRIR O CERRAR UNA INSTRUCCIÓN");
+                    ActualizarErroresSemantica();
+                }
+
+                dictGramaticasJELU.TryGetValue(cadenaTokens, out valorEncontrado);
+
+                if (valorEncontrado != null && cadenaTokensModificada.Split(' ').Length != 1)
+                {
+                    rtxJELUVertical.Text += "";
+                }
+
+                aux = 0;
+                restador = 0;
+            }
+            else
+            {
+                if ((aux + (cantidadAuxiliar - restador)) == cantidadAuxiliar)
+                {
+                    aux = 0;
+                    restador++;
+                }
+                else
+                {
+                    aux++;
+                }
+
+                if ((strBloque == "" || cadenaTokensModificada.Split(' ').Contains("S")) && cadenaTokensModificada.Split(' ').Length > 1)
+                {
+                    rtxJELUVertical.Text += "ERROR DE SEMANTICA\n\n"; //Visuales
+                    ListaErroresSemantica.Add("ERROR: FALTA ABRIR O CERRAR UNA INSTRUCCIÓN");
+                    ActualizarErroresSemantica();
+                    break; //Controlar si encuentra un error de sintaxis romper para que no se cicle
+                }
+            }
+
+        } while (cadenaTokensModificada.Split(' ').Length > 1);
+    }
+}
+
+#endregion
 ```
