@@ -1,56 +1,72 @@
 const express = require('express');
-const jsonwebtoken = require('jsonwebtoken');
+const cors = require('cors');
+const morgan = require('morgan');
+const fs = require('fs');
+const path = require('path');
 const mysql = require('mysql2/promise');
+const jsonwebtoken = require('jsonwebtoken');
 
 const app = express();
+
+app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
+app.use(cors());
 
-const db = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'Castillo105.dct',
-  database: 'jwt'
+const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
+app.use(morgan('combined', { stream: accessLogStream }));
+
+const dataDeBase = {
+    host: 'localhost',
+    user: 'root',
+    password: 'Castillo105.dct',
+    database: 'jwt',
+};
+
+app.get('/', function (req, res) {
+    res.send('hello, world!');
 });
 
-app.post('/login', function (req, res, next) {
+// Login route
+app.post('/login', async (req, res) => {
     const { correo, contraseña } = req.body;
-    const conexion = mysql.createConnection(db);
-    conexion.query(
-      'SELECT * FROM usuarios WHERE correo = ? AND contraseña= ?',
-      [correo, contraseña],
-      (err, rows) => {
-        if (err) {
-          console.error(err);
-          res.status(500).json({ error: 'Error en la base de datos' });
-        } else if (rows.length === 1) {
-          const user = { correo: rows[0].correo, id: rows[0].id };
-          const token = jsonwebtoken.sign(user, 'claveSecreta');
-          console.log(token);
-          res.json({ token });
-        } else {
-          res.status(401).json({ error: 'Credenciales incorrectas' });
-        }
-      }
-    );
-  });
-  
 
-app.get('/sistemas', verificarToken, function (req, res, next) {
-  res.json({ mensaje: 'Acceso concedido a ruta sistema' });
+    try {
+        const conexion = await mysql.createConnection(dataDeBase);
+        const [rows, fields] = await conexion.query('SELECT * FROM usuarios WHERE correo = ? AND contraseña = ?', [correo, contraseña]);
+
+        if (rows.length === 1) {
+            // User authenticated, generate a token
+            const token = jsonwebtoken.sign({ correo }, 'claveSecreta');
+            res.json({ token });
+        } else {
+            res.status(401).json({ mensaje: 'Credenciales inválidas' });
+        }
+    } catch (err) {
+        res.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
+    }
 });
 
-app.listen(8084, function () {
-  console.log('Servidor express escuchando en puerto 8084');
+// Protected route
+app.get('/sistemas', verificarToken, function (req, res) {
+    res.json({ mensaje: 'Acceso concedido a ruta sistema' });
 });
 
 function verificarToken(req, res, next) {
-  console.log(req.headers.authorization);
-  let token = req.headers.authorization.substring(7, req.headers.authorization.length);
-  jsonwebtoken.verify(token, 'claveSecreta', function (err, decoded) {
-    if (err) {
-      res.json({ Error: 'Acceso no concedido a ruta sistemas' });
-    } else {
-      next();
+    const token = req.headers.authorization && req.headers.authorization.substring(7);
+
+    if (!token) {
+        return res.status(401).json({ mensaje: 'Token no proporcionado' });
     }
-  });
+
+    jsonwebtoken.verify(token, 'claveSecreta', function (err, decoded) {
+        if (err) {
+            res.status(403).json({ mensaje: 'Acceso no concedido a ruta sistemas' });
+        } else {
+            next();
+        }
+    });
 }
+
+app.listen(8084, function () {
+    console.log('Servidor express escuchando en puerto 8084');
+});
