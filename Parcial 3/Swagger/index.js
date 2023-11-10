@@ -24,7 +24,7 @@ const swaggerOptions = {
             { url: "http://localhost:8084" }
         ],
     },
-    apis: [`${path.join(__dirname, ".index.js")}`],
+    apis: [`${path.join(__dirname, "./index.js")}`],
 };
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
@@ -46,6 +46,18 @@ const dataDeBase = {
 };
 
 //ALL USERS
+/**
+ * @swagger
+ * /Alumno/:
+ *   get:
+ *     tags:
+ *       - Alumnos
+ *     summary: Consultar todos los alumnos
+ *     description: Obtiene Json que con todos los alumnos de la Base de Datos
+ *     responses:
+ *       200:
+ *         description: Regresa un Json con todos los alumnos
+ */
 app.get('/alumnos', async (req, resp) => {
     try {
         const conexion = await mysql.createConnection(dataDeBase);
