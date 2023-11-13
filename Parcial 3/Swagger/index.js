@@ -6,29 +6,36 @@ const path = require('path');
 const mysql = require('mysql2/promise');
 const swaggerUI = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
+const { SwaggerTheme } = require('swagger-themes');
 
 const app = express();
+
+const theme = new SwaggerTheme('v3');
+
+const options = {
+  explorer: true,
+  customCss: theme.getBuffer('outline')
+};
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(cors());
 
+const def = fs.readFileSync(path.join(__dirname,'./swagger.json'),
+    {encoding:'utf8',flags:'r'});
+const defObj = JSON.parse(def)
+
 const swaggerOptions = {
-    definition: {
-        openapi: '3.0.0',
-        info: {
-            title: 'API Alumnos',
-            version: '1.0.0',
-        },
-        servers: [
-            { url: "http://localhost:8084" }
-        ],
-    },
-    apis: [`${path.join(__dirname, "./index.js")}`],
-};
+    definition:defObj,
+    apis: [`${path.join(__dirname, "./index.js")}`]
+}
 
 const swaggerDocs = swaggerJsDoc(swaggerOptions);
-app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs));
+app.use("/api-docs",swaggerUI.serve,swaggerUI.setup(swaggerDocs,options));
+
+app.use("/api-docs-json",(req,res)=>{
+    res.json(swaggerDocs);
+});
 
 const accessLogStream = fs.createWriteStream(path.join(__dirname, 'access.log'), { flags: 'a' });
 

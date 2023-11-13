@@ -108,3 +108,4 @@
 ::1 - - [08/Nov/2023:14:34:46 +0000] "GET / HTTP/1.1" 200 13 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
 ::1 - - [08/Nov/2023:14:39:57 +0000] "GET /alumnos HTTP/1.1" 500 68 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
 ::1 - - [08/Nov/2023:14:43:11 +0000] "GET /alumnos HTTP/1.1" 200 205 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
+::1 - - [13/Nov/2023:14:34:34 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8084/api-docs-json/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
