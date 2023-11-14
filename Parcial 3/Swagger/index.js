@@ -7,6 +7,7 @@ const mysql = require('mysql2/promise');
 const swaggerUI = require('swagger-ui-express')
 const swaggerJsDoc = require('swagger-jsdoc')
 const { SwaggerTheme } = require('swagger-themes');
+const redoc = require('redoc-express');
 
 const app = express();
 
@@ -23,7 +24,12 @@ app.use(cors());
 
 const def = fs.readFileSync(path.join(__dirname,'./swagger.json'),
     {encoding:'utf8',flags:'r'});
-const defObj = JSON.parse(def)
+
+const read = fs.readFileSync(path.join(__dirname,'./README.md'),
+    {encoding:'utf8',flags:'r'});
+
+const defObj = JSON.parse(def);
+defObj.info.description = read;
 
 const swaggerOptions = {
     definition:defObj,
@@ -192,6 +198,39 @@ app.delete('/alumnos', async (req, resp) => {
         resp.status(500).json({ mensaje: 'Error de conexión', tipo: err.message, sql: err.sqlMessage });
     }
 });
+
+app.get(
+    '/api-docs-redoc',
+    redoc({
+      title: 'API Docs',
+      specUrl: '/api-docs-json',
+      nonce: '', // <= it is optional,we can omit this key and value
+      // we are now start supporting the redocOptions object
+      // you can omit the options object if you don't need it
+      // https://redocly.com/docs/api-reference-docs/configuration/functionality/
+      redocOptions: {
+        theme: {
+          colors: {
+            primary: {
+              main: '#6EC5AB'
+            }
+          },
+          typography: {
+            fontFamily: `"museo-sans", 'Helvetica Neue', Helvetica, Arial, sans-serif`,
+            fontSize: '15px',
+            lineHeight: '1.5',
+            code: {
+              code: '#87E8C7',
+              backgroundColor: '#4D4D4E'
+            }
+          },
+          menu: {
+            backgroundColor: '#ffffff'
+          }
+        }
+      }
+    })
+  );
 
 app.listen(8084, () => {
     console.log('Servidor express escuchando');
