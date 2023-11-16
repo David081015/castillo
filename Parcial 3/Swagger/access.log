@@ -111,3 +111,6 @@
 ::1 - - [13/Nov/2023:14:34:34 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8084/api-docs-json/" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
 ::1 - - [14/Nov/2023:14:42:04 +0000] "GET /api-docs-redoc HTTP/1.1" 200 937 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
 ::1 - - [14/Nov/2023:14:42:05 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8084/api-docs-redoc" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
+::1 - - [16/Nov/2023:15:10:25 +0000] "GET /alumnos HTTP/1.1" 200 205 "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
+::1 - - [16/Nov/2023:15:10:25 +0000] "GET /favicon.ico HTTP/1.1" 404 150 "http://localhost:8084/alumnos" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
+::1 - - [16/Nov/2023:15:10:28 +0000] "GET /alumnos HTTP/1.1" 304 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/118.0.0.0 Safari/537.36 OPR/104.0.0.0"
